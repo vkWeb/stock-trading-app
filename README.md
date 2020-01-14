@@ -3,7 +3,7 @@ An app built with Flask to "buy" and "sell" stocks. Buy, sell, check price of st
 
 ### My Learning Objectives:
 
-- [ ] caching in detail
+- [x] caching in detail
 - [ ] cookies, session management
 - [ ] authentication, authorization
 - [ ] web security - eliminate OWASP top ten security risks from the app 
