@@ -1,9 +1,9 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Apology
+    Apology: something went wrong
 {% endblock %}
 
 {% block main %}
-    <img alt="{{ top }}" class="border" src="http://memegen.link/custom/{{ top | urlencode }}/{{ bottom | urlencode }}.jpg?alt=https://i.imgur.com/CsCgN7Ll.png" title="{{ top }}">
+    <img alt="{{ top }}" class="img-fluid" src="http://memegen.link/trump/{{ top | urlencode }}/{{ bottom | urlencode }}.jpg" title="{{ top }}">
 {% endblock %}

@@ -44,20 +44,21 @@
                     </ul>
                 {% else %}
                     <ul class="navbar-nav ml-auto mt-2">
-                        <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/register">Register (It's free!)</a></li>
                         <li class="nav-item"><a class="nav-link" href="/login">Log In</a></li>
                     </ul>
                 {% endif %}
             </div>
         </nav>
 
-        {% if get_flashed_messages() %}
-            <header>
+        <header>
+            <h2 class="">{% block header %}{% endblock %}</h2>
+            {% if get_flashed_messages() %}
                 <div class="alert alert-primary border text-center" role="alert">
                     {{ get_flashed_messages() | join(" ") }}
                 </div>
-            </header>
-        {% endif %}
+            {% endif %}
+        </header>
 
         <main class="container p-5">
             {% block main %}{% endblock %}
