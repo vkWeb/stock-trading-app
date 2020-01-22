@@ -39,7 +39,7 @@ if not os.environ.get("API_KEY"):
 @helpers.login_required
 def index():
     """Show portfolio of stocks"""
-    return helpers.apology("TODO")
+    return helpers.apology("TODO", 500)
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -50,21 +50,23 @@ def register():
 
         # Ensure username was submitted
         if not flask.request.form.get("username"):
-            return helpers.apology("must provide username", 400)
+            return helpers.apology("must provide username", 401)
 
         # Ensure password was submitted
         elif not flask.request.form.get("password"):
-            return helpers.apology("must provide password", 400)
+            return helpers.apology("must provide password", 401)
 
         # Ensure confirmation password was submitted
         elif not flask.request.form.get("confirmation"):
-            return helpers.apology("must provide confirmation password", 400)
+            return helpers.apology("must provide confirmation password", 401)
 
         # Ensure password and confirmation password are same
         elif flask.request.form.get("password") != flask.request.form.get("confirmation"):
-            return helpers.apology("password and confirmation password must be same", 400)
-
-    return flask.render_template("register.html")
+            return helpers.apology("password and confirmation password must be same", 401)
+    
+    else:
+        # Render register page
+        return flask.render_template("register.html")
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -79,11 +81,11 @@ def login():
 
         # Ensure username was submitted
         if not flask.request.form.get("username"):
-            return helpers.apology("must provide username", 403)
+            return helpers.apology("must provide username", 401)
 
         # Ensure password was submitted
         elif not flask.request.form.get("password"):
-            return helpers.apology("must provide password", 403)
+            return helpers.apology("must provide password", 401)
 
         # Query database for username
         rows = db.execute("SELECT * FROM users WHERE username = :username",
@@ -91,7 +93,7 @@ def login():
 
         # Ensure username exists and password is correct
         if len(rows) != 1 or not werkzeug.security.check_password_hash(rows[0]["hash"], flask.request.form.get("password")):
-            return helpers.apology("invalid username and/or password", 403)
+            return helpers.apology("invalid username and/or password", 401)
 
         # Remember which user has logged in
         flask.session["user_id"] = rows[0]["id"]
@@ -118,34 +120,34 @@ def logout():
 @helpers.login_required
 def quote():
     """Get stock quote."""
-    return helpers.apology("TODO")
+    return helpers.apology("TODO", 500)
 
 
 @app.route("/buy", methods=["GET", "POST"])
 @helpers.login_required
 def buy():
     """Buy shares of stock"""
-    return helpers.apology("TODO")
+    return helpers.apology("TODO", 500)
 
 
 @app.route("/sell", methods=["GET", "POST"])
 @helpers.login_required
 def sell():
     """Sell shares of stock"""
-    return helpers.apology("TODO")
+    return helpers.apology("TODO", 500)
 
 
 @app.route("/history")
 @helpers.login_required
 def history():
     """Show history of transactions"""
-    return helpers.apology("TODO")
+    return helpers.apology("TODO", 500)
 
 
-@app.route("/check", methods=["GET"])
+@app.route("/api/check", methods=["GET"])
 def check():
     """Return true if username available, else false, in JSON format"""
-    return flask.jsonify("TODO")
+    return flask.jsonify("TODO", 500)
 
 
 def errorhandler(e):
