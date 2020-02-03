@@ -7,6 +7,10 @@ A stock trading web app built on Flask with an aim to learn about backends.
 
 ### My Learning Objectives:
 
+I'll be following Miguel Grinberg's Mega-Tutorial practices for structuring my app with my taste sprinkled in some places.
+
+Topics I plan to master by the end of this project:
+
 - [x] caching in detail
 - [x] databases, ORMs
 - [ ] deployment to cloud
@@ -28,19 +32,15 @@ Install or update to the latest version of `Python` if you haven't already.
 Time to get started. Feel free to create an issue if you get stuck or if you need help :)
 
 ```
-# Install pipenv
+# Installs pipenv globally
 pip install pipenv
 
-# Install dependencies in a virtualenv
+# The below command installs dependencies in a pipenv's virtualenv
 pipenv install
 
-# Activate virtualenv subshell
+# Activates virtualenv subshell
 pipenv shell
 
-# Setup flask in development mode
-export FLASK_APP="application.py"
-export FLASK_ENV="development"
-
-# Run app, served at http://127.0.0.1:5000 by default
+# Runs the app, served at http://127.0.0.1:5000 by default
 flask run
 ```

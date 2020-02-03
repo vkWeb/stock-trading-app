@@ -5,13 +5,12 @@ verify_ssl = true
 
 [dev-packages]
 pylint = "*"
-autopep8 = "*"
+python-dotenv = "*"
 
 [packages]
-cs50 = "*"
-flask-session = "*"
+flask = "*"
 requests = "*"
-Flask = "*"
+flask-session = "*"
 
 [requires]
 python_version = "3.7"
