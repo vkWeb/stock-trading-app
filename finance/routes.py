@@ -2,18 +2,14 @@ import flask
 import flask_session
 import werkzeug
 
-import helpers
-import config
 from finance import app
-
+from . import helpers
 
 # Jinja2 custom filter
 app.jinja_env.filters["usd"] = helpers.usd
 
-# Apply configuration and use flask_session
-app.config.from_object(config.Config)
+# Apply flask_session
 flask_session.Session(app)
-
 
 # Ensure responses aren't cached
 @app.after_request
