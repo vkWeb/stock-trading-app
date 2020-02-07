@@ -1,9 +1,9 @@
 import flask
 import flask_session
-import werkzeug
 
-from finance import app
-from . import helpers
+from werkzeug import security, exceptions
+from finance import app, db
+from . import helpers, models
 
 # Jinja2 custom filter
 app.jinja_env.filters["usd"] = helpers.usd
@@ -46,9 +46,31 @@ def register():
         # Ensure password and confirmation password are same
         elif flask.request.form.get("password") != flask.request.form.get("confirmation"):
             return helpers.apology("password and confirmation password must be same", 401)
-    
+
+        # Query db for username
+        user_check = models.User.query.filter_by(username=flask.request.form.get("username")).first()
+
+        # Check whether username exists or not
+        if user_check is None:
+            # If username doesn't exists then insert form data to db 
+            user = models.User(username=flask.request.form.get("username"), hash=security.generate_password_hash(flask.request.form.get("password")))
+            db.session.add(user)
+            db.session.commit()
+
+            # Log in user via session
+            flask.session["user_id"] = user.id
+            
+            # Flash success register message
+            flask.flash("Wow, we got a new user. You have successfully registered 😀")
+
+            # Redirect to index page after successful registration
+            return flask.redirect(flask.url_for("index"))
+        # If username already exists, throw error
+        else:
+            return helpers.apology("username already taken", 401)
+
+    # Render register page if request method is not POST
     else:
-        # Render register page
         return flask.render_template("register.html")
 
 
@@ -71,22 +93,23 @@ def login():
             return helpers.apology("must provide password", 401)
 
         # Query database for username
-        """ Needs to be updated by an ORM
-
-        rows = db.execute("SELECT * FROM users WHERE username = :username",
-                          username=flask.request.form.get("username")) 
+        user = models.User.query.filter_by(username=flask.request.form.get("username")).first()
         
-
         # Ensure username exists and password is correct
-        if len(rows) != 1 or not werkzeug.security.check_password_hash(rows[0]["hash"], flask.request.form.get("password")):
-            return helpers.apology("invalid username and/or password", 401)
+        if user is None: 
+            return helpers.apology("no account found for entered username", 401)
+        
+        elif not security.check_password_hash(user.hash, flask.request.form.get("password")):
+            return helpers.apology("invalid password", 401)
 
         # Remember which user has logged in
-        flask.session["user_id"] = rows[0]["id"]
-        
-        """
+        flask.session["user_id"] = user.id
+
+        # Flash success log in message
+        flask.flash("Welcome again! You have successfully logged in 😀")
+
         # Redirect user to home page
-        return flask.redirect("/")
+        return flask.redirect(flask.url_for("index"))
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
@@ -100,7 +123,11 @@ def logout():
     Forget any user_id and redirect user to login form
     """
     flask.session.clear()
-    return flask.redirect("/")
+
+    # Flash success log out message
+    flask.flash("You have successfully logged out. It's bad to see you go 😔")
+
+    return flask.redirect(flask.url_for("index"))
 
 
 @app.route("/quote", methods=["GET", "POST"])
@@ -131,19 +158,23 @@ def history():
     return helpers.apology("TODO", 500)
 
 
-@app.route("/api/check", methods=["GET"])
-def check():
+@app.route("/api/check/<string:username>", methods=["GET"])
+def check(username):
     """Return true if username available, else false, in JSON format"""
-    return flask.jsonify("TODO", 500)
+    result = models.User.query.filter_by(username=username).first()
+    
+    if result is None:
+        return flask.jsonify(is_username_available=True)
+    return flask.jsonify(is_username_available=False)
 
 
 def errorhandler(e):
     """Handle error"""
-    if not isinstance(e, werkzeug.exceptions.HTTPException):
-        e = werkzeug.exceptions.InternalServerError()
+    if not isinstance(e, exceptions.HTTPException):
+        e = exceptions.InternalServerError()
     return helpers.apology(e.name, e.code)
 
 
 # Listen for errors
-for code in werkzeug.exceptions.default_exceptions:
+for code in exceptions.default_exceptions:
     app.errorhandler(code)(errorhandler)

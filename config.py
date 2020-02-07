@@ -1,6 +1,8 @@
 import os
 import tempfile
 
+basedir = os.path.abspath(os.path.dirname(__file__))
+
 class Config(object):
   """All the configurations required to run the web application"""
 
@@ -10,7 +12,7 @@ class Config(object):
   SESSION_TYPE = "filesystem"
 
   # Database configuration
-  SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL") or "sqlite:///finance.db"
+  SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL") or ("sqlite:///" + os.path.join(basedir, "finance.db"))
   SQLALCHEMY_TRACK_MODIFICATIONS = False
 
   # API Config
