@@ -6,6 +6,9 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 class Config(object):
   """All the configurations required to run the web application"""
 
+  # Turn on Jinja template reloading
+  TEMPLATES_AUTO_RELOAD = True
+
   # Configure session to use filesystem (instead of signed cookies)
   SESSION_FILE_DIR = tempfile.mkdtemp()
   SESSION_PERMANENT = False

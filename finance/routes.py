@@ -74,7 +74,7 @@ def register():
         flask.flash("Ummm, you have already registered 😉")
         return flask.redirect(flask.url_for("index"))
 
-    # Render register page as reached via GET
+    # Render register page as user reached via GET
     else:
         return flask.render_template("register.html")
 
@@ -139,8 +139,21 @@ def logout():
 @app.route("/quote", methods=["GET", "POST"])
 @helpers.login_required
 def quote():
-    """Get stock quote."""
-    return helpers.apology("TODO", 500)
+    """Get stock quote (via helpers.lookup)."""
+
+    # Initialize quote as None
+    quote = None
+    
+    # If user submits symbol via POST
+    if flask.request.method == "POST":
+
+        # Fetch symbol's stock details from helpers.lookup
+        quote = helpers.lookup(flask.request.form.get("symbol"))
+
+        if quote is None:
+            flask.flash(f"Couldn't get quote for '{flask.request.form.get('symbol')}'. Please re-check spelling and try again.", "error")
+
+    return flask.render_template("quote.html", quote=quote)
 
 
 @app.route("/buy", methods=["GET", "POST"])

@@ -23,6 +23,18 @@ Topics I plan to master by the end of this project:
 - [ ] scalability, testing, CI & CD
 - [ ] QA
 
+Routes / controllers I need to implement:
+
+- [x] `/register` to register users
+- [x] `/login` to provide login mechanism
+- [x] `/logout` logs out user
+- [x] `/quote` to get a stock's latest price
+- [ ] `/buy` to buy stocks
+- [ ] `/index` shows the portfolio of stocks
+- [ ] `/sell` to sell stocks
+- [ ] `/history` to see the history of transactions
+- [ ] `/api/check/<username>` to allow username validation client side via AJAX
+
 ### Quick Development Setup
 
 Fork. Clone. Make sure you `cd` to `stock-trading-app` directory. Set upstream and origin.
@@ -32,6 +44,8 @@ Install or update to the latest version of `Python` if you haven't already.
 Time to get started. Feel free to create an issue if you get stuck or if you need help :)
 
 ```
+# Execute the below commands in `Bash` with administrative privileges
+
 # Installs pipenv globally
 pip install pipenv
 
@@ -40,6 +54,10 @@ pipenv install
 
 # Activates virtualenv subshell
 pipenv shell
+
+# Copies `sample.flaskenv` to `.flaskenv`
+# You can paste API credentials in `.flaskenv`
+cp sample.flaskenv .flaskenv
 
 # Runs the app, served at http://127.0.0.1:5000 by default
 flask run

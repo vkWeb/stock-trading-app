@@ -4,12 +4,8 @@
     Log In
 {% endblock %}
 
-{% block header %}
-    Log in to C$50: Finance
-{% endblock %}
-
 {% block main %}
-    <form action="/login" method="post">
+    <form action="/login" method="POST">
         <div class="form-group">
             <input autocomplete="off" autofocus class="form-control" name="username" placeholder="Username" type="text">
         </div>
