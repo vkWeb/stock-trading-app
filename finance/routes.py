@@ -8,7 +8,7 @@ from . import helpers, models
 # Jinja2 custom filter
 app.jinja_env.filters["usd"] = helpers.usd
 
-# Apply flask_session
+# Apply flask_session to app
 flask_session.Session(app)
 
 # Ensure responses aren't cached
@@ -47,29 +47,34 @@ def register():
         elif flask.request.form.get("password") != flask.request.form.get("confirmation"):
             return helpers.apology("password and confirmation password must be same", 401)
 
-        # Query db for username
+        # Validation passed. Now query db for username
         user_check = models.User.query.filter_by(username=flask.request.form.get("username")).first()
 
-        # Check whether username exists or not
+        # If username doesn't exists then insert form data to db
         if user_check is None:
-            # If username doesn't exists then insert form data to db 
             user = models.User(username=flask.request.form.get("username"), hash=security.generate_password_hash(flask.request.form.get("password")))
             db.session.add(user)
             db.session.commit()
 
-            # Log in user via session
+            # User registered. Now log in user via session
             flask.session["user_id"] = user.id
             
             # Flash success register message
             flask.flash("Wow, we got a new user. You have successfully registered 😀")
 
-            # Redirect to index page after successful registration
+            # Redirect to index page
             return flask.redirect(flask.url_for("index"))
-        # If username already exists, throw error
+        
+        # username already exists, throw error
         else:
             return helpers.apology("username already taken", 401)
+    
+    # If user is already logged in then redirect to index
+    elif flask.request.method == "GET" and flask.session.get("user_id") is not None:
+        flask.flash("Ummm, you have already registered 😉")
+        return flask.redirect(flask.url_for("index"))
 
-    # Render register page if request method is not POST
+    # Render register page as reached via GET
     else:
         return flask.render_template("register.html")
 
@@ -77,9 +82,6 @@ def register():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     """Log user in"""
-
-    # Forget any user_id
-    flask.session.clear()
 
     # User reached route via POST (as by submitting a form via POST)
     if flask.request.method == "POST":
@@ -110,6 +112,11 @@ def login():
 
         # Redirect user to home page
         return flask.redirect(flask.url_for("index"))
+        
+    # If user is already logged in then redirect to index
+    elif flask.request.method == "GET" and flask.session.get("user_id") is not None:
+        flask.flash("Don't be greedy, you are already logged in 😉")
+        return flask.redirect(flask.url_for("index"))
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
@@ -126,7 +133,6 @@ def logout():
 
     # Flash success log out message
     flask.flash("You have successfully logged out. It's bad to see you go 😔")
-
     return flask.redirect(flask.url_for("index"))
 
 

@@ -10,4 +10,4 @@ app.config.from_object(config.Config)
 db = flask_sqlalchemy.SQLAlchemy(app)
 migrate = flask_migrate.Migrate(app, db)
 
-from finance import routes, models
+from finance import routes

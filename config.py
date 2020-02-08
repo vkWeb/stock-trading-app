@@ -14,6 +14,3 @@ class Config(object):
   # Database configuration
   SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL") or ("sqlite:///" + os.path.join(basedir, "finance.db"))
   SQLALCHEMY_TRACK_MODIFICATIONS = False
-
-  # API Config
-  API_KEY = os.environ.get("API_KEY") or "pk_7819282ea61a4fdd897c9cb12a242d7b"

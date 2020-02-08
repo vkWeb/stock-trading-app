@@ -14,6 +14,7 @@
         <!-- https://favicon.io/emoji-favicons/money-mouth-face/ -->
         <link href="/static/favicon.ico" rel="icon">
 
+        <!-- Stylesheet -->
         <link href="/static/styles.css" rel="stylesheet">
 
         <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
@@ -52,10 +53,14 @@
         </nav>
 
         <header>
-            <h2 class="">{% block header %}{% endblock %}</h2>
+            <h2>{% block header %}{% endblock %}</h2>
+
             {% if get_flashed_messages() %}
-                <div class="alert alert-primary border text-center" role="alert">
+                <div class="alert alert-primary border text-center alert-dismissible" role="alert">
                     {{ get_flashed_messages() | join(" ") }}
+                    <button class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true" class="small">Dismiss</span>
+                    </button>
                 </div>
             {% endif %}
         </header>

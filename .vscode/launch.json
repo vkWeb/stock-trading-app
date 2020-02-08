@@ -11,7 +11,8 @@
       "module": "flask",
       "env": {
         "FLASK_APP": "application.py",
-        "FLASK_ENV": "development"
+        "FLASK_ENV": "development",
+        "FLASK_DEBUG": "0"
       },
       "args": [
         "run",
