@@ -50,7 +50,7 @@ Time to get started. Feel free to create an issue if you get stuck or if you nee
 pip install pipenv
 
 # The below command installs dependencies in a pipenv's virtualenv
-pipenv install
+pipenv install --dev
 
 # Activates virtualenv subshell
 pipenv shell
