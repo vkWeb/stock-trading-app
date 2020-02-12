@@ -53,14 +53,16 @@
         </nav>
 
         <header>
-            {% if get_flashed_messages() %}
-                <div class="alert alert-primary border text-center alert-dismissible" role="alert">
-                    {{ get_flashed_messages() | join(" ") }}
-                    <button class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true" class="small">Dismiss</span>
-                    </button>
-                </div>
-            {% endif %}
+            {% with flash_message = get_flashed_messages(with_categories=true) %}
+                {% if flash_message %}
+                    <div class="alert alert-{{ flash_message[0][0] }} border text-center alert-dismissible" role="alert">
+                        {{ flash_message[0][1] }}
+                        <button class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endif %}
+            {% endwith %}
         </header>
 
         <main class="container p-5">

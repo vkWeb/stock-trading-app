@@ -44,20 +44,20 @@ Install or update to the latest version of `Python` if you haven't already.
 Time to get started. Feel free to create an issue if you get stuck or if you need help :)
 
 ```
-# Execute the below commands in `Bash` with administrative privileges
+# Note: execute the below commands in `Bash` with administrative privileges
 
 # Installs pipenv globally
 pip install pipenv
 
-# The below command installs dependencies in a pipenv's virtualenv
+# The below command installs dependencies in the pipenv's virtualenv
 pipenv install --dev
 
 # Activates virtualenv subshell
 pipenv shell
 
-# Copies `sample.flaskenv` to `.flaskenv`
-# You can paste API credentials in `.flaskenv`
-cp sample.flaskenv .flaskenv
+# Copies `sample.env` to `.env`
+# You can paste your API credentials in `.env`
+cp sample.env .env
 
 # Runs the app, served at http://127.0.0.1:5000 by default
 flask run

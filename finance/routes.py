@@ -60,7 +60,7 @@ def register():
             flask.session["user_id"] = user.id
             
             # Flash success register message
-            flask.flash("Wow, we got a new user. You have successfully registered 😀")
+            flask.flash("Wow, we got a new user. You have successfully registered 😀", "success")
 
             # Redirect to index page
             return flask.redirect(flask.url_for("index"))
@@ -71,7 +71,7 @@ def register():
     
     # If user is already logged in then redirect to index
     elif flask.request.method == "GET" and flask.session.get("user_id") is not None:
-        flask.flash("Ummm, you have already registered 😉")
+        flask.flash("Ummm, you have already registered 😉", "info")
         return flask.redirect(flask.url_for("index"))
 
     # Render register page as user reached via GET
@@ -108,14 +108,14 @@ def login():
         flask.session["user_id"] = user.id
 
         # Flash success log in message
-        flask.flash("Welcome again! You have successfully logged in 😀")
+        flask.flash("Welcome again! You have successfully logged in 😀", "success")
 
         # Redirect user to home page
         return flask.redirect(flask.url_for("index"))
         
     # If user is already logged in then redirect to index
     elif flask.request.method == "GET" and flask.session.get("user_id") is not None:
-        flask.flash("Don't be greedy, you are already logged in 😉")
+        flask.flash("Don't be greedy, you are already logged in 😉", "info")
         return flask.redirect(flask.url_for("index"))
 
     # User reached route via GET (as by clicking a link or via redirect)
@@ -132,7 +132,7 @@ def logout():
     flask.session.clear()
 
     # Flash success log out message
-    flask.flash("You have successfully logged out. It's bad to see you go 😔")
+    flask.flash("You have successfully logged out. It's bad to see you go. We'll miss you 😔", "success")
     return flask.redirect(flask.url_for("index"))
 
 
@@ -146,12 +146,15 @@ def quote():
     
     # If user submits symbol via POST
     if flask.request.method == "POST":
+        # Render apology if symbol input is blank
+        if not flask.request.form.get("symbol"):
+            return helpers.apology("must provide symbol", 400)
 
         # Fetch symbol's stock details from helpers.lookup
         quote = helpers.lookup(flask.request.form.get("symbol"))
 
         if quote is None:
-            flask.flash(f"Couldn't get quote for '{flask.request.form.get('symbol')}'. Please re-check spelling and try again.", "error")
+            flask.flash(f"Couldn't get quote for \"{flask.request.form.get('symbol')}\". Please re-check spelling and try again.", "danger")
 
     return flask.render_template("quote.html", quote=quote)
 
@@ -160,7 +163,7 @@ def quote():
 @helpers.login_required
 def buy():
     """Buy shares of stock"""
-    return helpers.apology("TODO", 500)
+    return flask.render_template("buy.html")
 
 
 @app.route("/sell", methods=["GET", "POST"])

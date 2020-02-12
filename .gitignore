@@ -1,4 +1,4 @@
 .vscode/settings.json
 __pycache__
 finance.db
-.flaskenv
+.env

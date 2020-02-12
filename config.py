@@ -14,7 +14,7 @@ class Config(object):
 
     # Configure session to use filesystem (instead of signed cookies)
     SESSION_FILE_DIR = tempfile.mkdtemp()
-    SESSION_PERMANENT = True
+    SESSION_PERMANENT = False
     SESSION_TYPE = "filesystem"
 
     # Database configuration

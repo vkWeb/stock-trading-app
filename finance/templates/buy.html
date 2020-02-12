@@ -1,20 +1,19 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Quote
+    Buy
 {% endblock %}
 
 {% block main %}
-
-    {% if quote %}
-        <p>A share of {{ quote.name }} ({{ quote.symbol }}) costs <b>{{ quote.price | usd() }}</b></p>
-    {% endif %}
-
-    <form action="/quote" method="POST">
+    <form action="/buy" method="POST">
         <div class="form-group">
             <input autocomplete="off" autofocus class="form-control" name="symbol" placeholder="Stock symbol e.g. NFLX" type="text">
         </div>
+
+        <div class="form-group">
+            <input autocomplete="off" class="form-control" name="shares" min="1" placeholder="Number of shares" type="number">
+        </div>
         
-        <button class="btn btn-primary" type="submit">Quote</button>
+        <button class="btn btn-primary" type="submit">Buy</button>
     </form>
 {% endblock %}
