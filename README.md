@@ -29,7 +29,7 @@ Routes / controllers I need to implement:
 - [x] `/login` to provide login mechanism
 - [x] `/logout` logs out user
 - [x] `/quote` to get a stock's latest price
-- [ ] `/buy` to buy stocks
+- [x] `/buy` to buy stocks
 - [ ] `/index` shows the portfolio of stocks
 - [ ] `/sell` to sell stocks
 - [ ] `/history` to see the history of transactions

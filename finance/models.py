@@ -7,7 +7,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(128), index=True, unique=True, nullable=False)
     hash = db.Column(db.String(128), nullable=False)
-    cash = db.Column(db.Integer, default=10000.00, nullable=False)
+    cash = db.Column(db.Float, default=10000.00, nullable=False)
 
     transactions = db.relationship("Transaction", back_populates="user")
 

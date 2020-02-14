@@ -1,8 +1,8 @@
-"""Simpler model design
+"""simple model design
 
-Revision ID: d1b7a33e30dd
+Revision ID: 3d5105817540
 Revises: 
-Create Date: 2020-02-14 19:29:56.964278
+Create Date: 2020-02-14 19:36:30.957280
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'd1b7a33e30dd'
+revision = '3d5105817540'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -22,9 +22,8 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('username', sa.String(length=128), nullable=False),
     sa.Column('hash', sa.String(length=128), nullable=False),
-    sa.Column('cash', sa.Integer(), nullable=False),
-    sa.PrimaryKeyConstraint('id')
-    )
+    sa.Column('cash', sa.Float(), nullable=False),
+    sa.PrimaryKeyConstraint('id'))
 
     op.create_index(op.f('ix_users_username'), 'users', ['username'], unique=True)
 
@@ -38,8 +37,7 @@ def upgrade():
     sa.Column('trans_type', sa.String(length=128), nullable=False),
     sa.Column('transacted_at', sa.DateTime(), nullable=False),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
-    sa.PrimaryKeyConstraint('id')
-    )
+    sa.PrimaryKeyConstraint('id'))
     
     op.create_index(op.f('ix_transactions_company_name'), 'transactions', ['company_name'], unique=False)
     op.create_index(op.f('ix_transactions_company_symbol'), 'transactions', ['company_symbol'], unique=False)

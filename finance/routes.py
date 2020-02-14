@@ -3,7 +3,8 @@ import flask_session
 
 from werkzeug import security, exceptions
 from finance import app, db
-from . import helpers, models
+from . import helpers
+from .models import User, Transaction
 
 # Jinja2 custom filter
 app.jinja_env.filters["usd"] = helpers.usd
@@ -48,11 +49,11 @@ def register():
             return helpers.apology("password and confirmation password must be same", 401)
 
         # Validation passed. Now query db for username
-        user_check = models.User.query.filter_by(username=flask.request.form.get("username")).first()
+        user_check = User.query.filter_by(username=flask.request.form.get("username")).first()
 
         # If username doesn't exists then insert form data to db
         if user_check is None:
-            user = models.User(username=flask.request.form.get("username"), hash=security.generate_password_hash(flask.request.form.get("password")))
+            user = User(username=flask.request.form.get("username"), hash=security.generate_password_hash(flask.request.form.get("password")))
             db.session.add(user)
             db.session.commit()
 
@@ -95,7 +96,7 @@ def login():
             return helpers.apology("must provide password", 401)
 
         # Query database for username
-        user = models.User.query.filter_by(username=flask.request.form.get("username")).first()
+        user = User.query.filter_by(username=flask.request.form.get("username")).first()
         
         # Ensure username exists and password is correct
         if user is None: 
@@ -163,6 +164,43 @@ def quote():
 @helpers.login_required
 def buy():
     """Buy shares of stock"""
+    # If request method is POST as via form
+    if flask.request.method == "POST":
+
+        # If symbol is blank return apology
+        if not flask.request.form.get("symbol"):
+            return helpers.apology("must provide symbol", 400)
+
+        # If no. of shares is blank return apology
+        if not flask.request.form.get("shares"):
+            return helpers.apology("must provide shares", 400)
+
+        # Call API to get symbol's current price
+        quote = helpers.lookup(flask.request.form.get("symbol"))
+
+        # If symbol is invalid then flask error message
+        if quote is None:
+            flask.flash(f"Symbol \"{flask.request.form.get('symbol')}\" is invalid. Please re-check spelling and try again.", "danger")
+        # Else calculate required cash for successful purchase
+        else:
+            cost = int(flask.request.form.get("shares")) * float(quote["price"])
+
+            # Extract logged in user data from session
+            user_data = User.query.get(flask.session.get("user_id"))
+            
+            # If user has enough cash then subtract cost from cash
+            # Add transaction info to db and flash success message
+            if user_data.cash >= cost:
+                user_data.cash = user_data.cash - cost
+                transaction = Transaction(user_id=flask.session.get("user_id"), company_name=quote["name"], company_symbol=quote["symbol"], shares=flask.request.form.get("shares"), price=quote["price"], trans_type="purchase")
+                db.session.add(transaction)
+                db.session.commit()
+                flask.flash(f"Purchase successful 🤑", "info")
+            # Else flash message to inform user for insufficient funds
+            else:
+                flask.flash(f"You don't have enough cash. Total cost of purchase is {helpers.usd(cost)}, you have {helpers.usd(user_data.cash)} 😥", "info")
+
+    # Render template
     return flask.render_template("buy.html")
 
 
@@ -183,7 +221,7 @@ def history():
 @app.route("/api/check/<string:username>", methods=["GET"])
 def check(username):
     """Return true if username available, else false, in JSON format"""
-    result = models.User.query.filter_by(username=username).first()
+    result = User.query.filter_by(username=username).first()
     
     if result is None:
         return flask.jsonify(is_username_available=True)
