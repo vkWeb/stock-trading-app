@@ -15,18 +15,6 @@ class User(db.Model):
         return '<User {}>'.format(self.username)
 
 
-class Stock(db.Model):
-    __tablename__ = "stocks"
-
-    id = db.Column(db.Integer, primary_key=True)
-    company_name = db.Column(db.String(128), index=True, nullable=False)
-    company_symbol = db.Column(db.String(128), index=True, nullable=False)
-    shares = db.Column(db.Integer, nullable=False)
-    price = db.Column(db.Float, nullable=False)
-
-    transaction = db.relationship("Transaction", back_populates="stock")
-
-
 class Transaction(db.Model):
     __tablename__ = "transactions"
 
@@ -36,8 +24,9 @@ class Transaction(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), index=True, nullable=False)
     user = db.relationship("User", back_populates="transactions")
 
-    # One to one relationship
-    stock_id = db.Column(db.Integer, db.ForeignKey("stocks.id"), nullable=False)
-    stock = db.relationship("Stock", uselist=False, back_populates="transaction")
-
-    transacted_at = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
+    company_name = db.Column(db.String(128), index=True)
+    company_symbol = db.Column(db.String(128), index=True, nullable=False)
+    shares = db.Column(db.Integer, nullable=False)
+    price = db.Column(db.Float, nullable=False)
+    trans_type = db.Column(db.String(128), index=True, nullable=False)
+    transacted_at = db.Column(db.DateTime, default=datetime.datetime.utcnow, nullable=False)
