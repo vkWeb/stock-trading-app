@@ -2,12 +2,15 @@ import flask
 import flask_session
 
 from werkzeug import security, exceptions
+
 from finance import app, db
 from . import helpers
 from .models import User, Transaction
+from sqlalchemy.sql import func
 
-# Jinja2 custom filter
-app.jinja_env.filters["usd"] = helpers.usd
+# Jinja2 custom filters
+app.jinja_env.filters["usd"] = helpers.usd # noqa
+app.jinja_env.filters["lookup"] = helpers.lookup # noqa
 
 # Apply flask_session to app
 flask_session.Session(app)
@@ -19,11 +22,14 @@ def after_request(response):
     return response
 
 
-@app.route("/")
+@app.route("/", methods=["GET"])
 @helpers.login_required
 def index():
     """Show portfolio of stocks"""
-    return helpers.apology("TODO", 500)
+
+    user = User.query.get(flask.session.get("user_id"))
+    trans_data = db.session.query(Transaction.company_name, Transaction.company_symbol, func.sum(Transaction.shares).label("shares")).filter_by(user_id=user.id).group_by(Transaction.company_symbol)
+    return flask.render_template("index.html", transactions=trans_data, cash=user.cash)
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -57,7 +63,8 @@ def register():
             db.session.add(user)
             db.session.commit()
 
-            # User registered. Now log in user via session
+            # User registered
+            # Now store user.id in session
             flask.session["user_id"] = user.id
             
             # Flash success register message
@@ -124,11 +131,11 @@ def login():
         return flask.render_template("login.html")
 
 
-@app.route("/logout")
+@app.route("/logout", methods=["GET"])
 def logout():
     """
     Log user out
-    Forget any user_id and redirect user to login form
+    Forget any user_id and redirect user to index
     """
     flask.session.clear()
 
@@ -178,7 +185,7 @@ def buy():
         # Call API to get symbol's current price
         quote = helpers.lookup(flask.request.form.get("symbol"))
 
-        # If symbol is invalid then flask error message
+        # If symbol is invalid then flash error message
         if quote is None:
             flask.flash(f"Symbol \"{flask.request.form.get('symbol')}\" is invalid. Please re-check spelling and try again.", "danger")
         # Else calculate required cash for successful purchase
@@ -211,7 +218,7 @@ def sell():
     return helpers.apology("TODO", 500)
 
 
-@app.route("/history")
+@app.route("/history", methods=["GET"])
 @helpers.login_required
 def history():
     """Show history of transactions"""

@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Portfolio
+{% endblock %}
+
+{% block main %}
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Company Name</th>
+                <th>Company Symbol</th>
+                <th>Shares</th>
+                <th>Current Price</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+
+        {% with portfolio = namespace(total=0) %}
+            <tbody>
+                {% for trans in transactions %}
+                    <tr>
+                        <td>{{ trans.company_name }}</td>
+                        <td>{{ trans.company_symbol }}</td>
+                        <td>{{ trans.shares }}</td>
+
+                        {% set price = (trans.company_symbol | lookup)["price"] %}
+
+                        <td>{{ price | usd }}</td>
+                        <td>{{ (price * trans.shares) | usd }}</td>
+
+                        {% set portfolio.total = portfolio.total + (price * trans.shares) %}
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <td>CASH IN HAND</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>{{ cash | usd }}</td>
+                </tr>
+
+                <tr>
+                    <td><b>Grand Total</b></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    {% set portfolio.total = portfolio.total + cash %}
+                    <td><b>{{ portfolio.total | usd }}</b></td>
+                </tr>
+            </tbody>
+        {% endwith %}
+    </table>
+
+{% endblock %}
