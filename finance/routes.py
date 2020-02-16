@@ -28,8 +28,8 @@ def index():
     """Show portfolio of stocks"""
 
     user = User.query.get(flask.session.get("user_id"))
-    trans_data = db.session.query(Transaction.company_name, Transaction.company_symbol, func.sum(Transaction.shares).label("shares")).filter_by(user_id=user.id).group_by(Transaction.company_symbol)
-    return flask.render_template("index.html", transactions=trans_data, cash=user.cash)
+    portfolio = helpers.get_portfolio()
+    return flask.render_template("index.html", portfolio=portfolio, cash=user.cash)
 
 
 @app.route("/register", methods=["GET", "POST"])

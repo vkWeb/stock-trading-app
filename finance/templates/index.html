@@ -17,37 +17,32 @@
             </tr>
         </thead>
 
-        {% with portfolio = namespace(total=0) %}
+        {% with money = namespace(total=0) %}
             <tbody>
-                {% for trans in transactions %}
+                {% for stock in portfolio %}
                     <tr>
-                        <td>{{ trans.company_name }}</td>
-                        <td>{{ trans.company_symbol }}</td>
-                        <td>{{ trans.shares }}</td>
+                        <td>{{ stock.name }}</td>
+                        <td>{{ stock.symbol }}</td>
+                        <td>{{ stock.shares }}</td>
 
-                        {% set price = (trans.company_symbol | lookup)["price"] %}
+                        {% set price = (stock.symbol | lookup)["price"] %}
 
                         <td>{{ price | usd }}</td>
-                        <td>{{ (price * trans.shares) | usd }}</td>
+                        <td>{{ (price * stock.shares) | usd }}</td>
 
-                        {% set portfolio.total = portfolio.total + (price * trans.shares) %}
+                        {% set money.total = money.total + (price * stock.shares) %}
                     </tr>
                 {% endfor %}
+
                 <tr>
                     <td>CASH IN HAND</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>{{ cash | usd }}</td>
+                    <td colspan="4">{{ cash | usd }}</td>
                 </tr>
 
                 <tr>
                     <td><b>Grand Total</b></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    {% set portfolio.total = portfolio.total + cash %}
-                    <td><b>{{ portfolio.total | usd }}</b></td>
+                    {% set money.total = money.total + cash %}
+                    <td colspan="4"><b>{{ money.total | usd }}</b></td>
                 </tr>
             </tbody>
         {% endwith %}
