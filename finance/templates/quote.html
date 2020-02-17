@@ -7,7 +7,7 @@
 {% block main %}
 
     {% if quote %}
-        <p>A share of {{ quote.name }} ({{ quote.symbol }}) costs <b>{{ quote.price | usd() }}</b></p>
+        <p>A share of {{ quote.name }} ({{ quote.symbol }}) costs <b>{{ quote.price | usd }}</b></p>
     {% endif %}
 
     <form action="/quote" method="POST">

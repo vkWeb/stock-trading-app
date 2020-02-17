@@ -64,22 +64,33 @@ def lookup(symbol):
 def get_portfolio():
     """Fetch the portfolio of stocks user has."""
 
+    # Get user_id from session
     user_id = session.get("user_id")
+    
+    # Query db for purchase and sale transactions
     purchases = db.session.query(Transaction.company_name, Transaction.company_symbol, func.sum(Transaction.shares).label("shares")).filter_by(user_id=user_id, trans_type="purchase").group_by(Transaction.company_symbol).order_by(Transaction.company_symbol).all()
     sales = db.session.query(Transaction.company_name, Transaction.company_symbol, func.sum(Transaction.shares).label("shares")).filter_by(user_id=user_id, trans_type="sale").group_by(Transaction.company_symbol).order_by(Transaction.company_symbol).all()
+    
+    # Initialize portfolio as a list
     portfolio = []
 
+    # Loop from 0 till length of purchase transactions
     for i in range (0, len(purchases)):
         sales_shares = 0
 
+        # If sales exist for corresponding symbol
+        # Initialize sales_shares to that found in db
         if i < len(sales) and sales[i]:
             if purchases[i].company_symbol == sales[i].company_symbol:
                 sales_shares = sales[i].shares
-        portfolio.append({
-            "name": purchases[i].company_name,
-            "symbol": purchases[i].company_symbol,
-            "shares": purchases[i].shares - sales_shares
-        })
+
+        # Append stock data to portfolio
+        if int(purchases[i].shares - sales_shares) > 0:
+            portfolio.append({
+                "name": purchases[i].company_name,
+                "symbol": purchases[i].company_symbol,
+                "shares": int(purchases[i].shares - sales_shares)
+            })
     return portfolio
 
 

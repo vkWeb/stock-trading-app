@@ -6,7 +6,6 @@ from werkzeug import security, exceptions
 from finance import app, db
 from . import helpers
 from .models import User, Transaction
-from sqlalchemy.sql import func
 
 # Jinja2 custom filters
 app.jinja_env.filters["usd"] = helpers.usd # noqa
@@ -171,6 +170,7 @@ def quote():
 @helpers.login_required
 def buy():
     """Buy shares of stock"""
+
     # If request method is POST as via form
     if flask.request.method == "POST":
 
@@ -190,7 +190,7 @@ def buy():
             flask.flash(f"Symbol \"{flask.request.form.get('symbol')}\" is invalid. Please re-check spelling and try again.", "danger")
         # Else calculate required cash for successful purchase
         else:
-            cost = int(flask.request.form.get("shares")) * float(quote["price"])
+            cost = float(int(flask.request.form.get("shares")) * quote["price"])
 
             # Extract logged in user data from session
             user_data = User.query.get(flask.session.get("user_id"))
@@ -202,7 +202,8 @@ def buy():
                 transaction = Transaction(user_id=flask.session.get("user_id"), company_name=quote["name"], company_symbol=quote["symbol"], shares=flask.request.form.get("shares"), price=quote["price"], trans_type="purchase")
                 db.session.add(transaction)
                 db.session.commit()
-                flask.flash(f"Purchase successful 🤑", "info")
+                flask.flash("Purchase successful 🤑", "info")
+                return flask.redirect(flask.url_for("index"))
             # Else flash message to inform user for insufficient funds
             else:
                 flask.flash(f"You don't have enough cash. Total cost of purchase is {helpers.usd(cost)}, you have {helpers.usd(user_data.cash)} 😥", "info")
@@ -215,14 +216,41 @@ def buy():
 @helpers.login_required
 def sell():
     """Sell shares of stock"""
-    return helpers.apology("TODO", 500)
+
+    portfolio = helpers.get_portfolio()
+
+    if flask.request.method == "POST":
+        stock_found = False
+
+        for stock in portfolio:
+            if flask.request.form.get("symbol") == stock["symbol"]:
+                stock_found = True
+                
+                if int(flask.request.form.get("shares")) <= stock["shares"]:
+                    user = User.query.get(flask.session.get("user_id"))
+                    price = helpers.lookup(stock["symbol"])["price"]
+                    transaction = Transaction(user_id=user.id, company_name=stock["name"], company_symbol=stock["symbol"], shares=flask.request.form.get("shares"), price=price, trans_type="sale")
+                    db.session.add(transaction)
+                    db.session.commit()
+                    user.cash = float(user.cash + (price * int(flask.request.form.get("shares"))))
+                    flask.flash("Successful", "success")
+                    return flask.redirect(flask.url_for("index"))
+                else:
+                    flask.flash("You don't have enough shares", "danger")
+
+        if not stock_found:
+            flask.flash("Symbol not found", "danger")
+
+    return flask.render_template("sell.html", portfolio=portfolio)
 
 
 @app.route("/history", methods=["GET"])
 @helpers.login_required
 def history():
     """Show history of transactions"""
-    return helpers.apology("TODO", 500)
+
+    transactions = Transaction.query.order_by(Transaction.transacted_at.desc())
+    return flask.render_template("history.html", transactions=transactions)
 
 
 @app.route("/api/check/<string:username>", methods=["GET"])

@@ -5,7 +5,7 @@ A stock trading web app built on Flask with an aim to learn about backends.
 - View portfolio of your stocks
 - View history of purchase and sale of stocks
 
-### My Learning Objectives:
+## My Learning Objectives:
 
 I'll be following Miguel Grinberg's Mega-Tutorial practices for structuring my app with my taste sprinkled in some places.
 
@@ -30,12 +30,12 @@ Routes / controllers I need to implement:
 - [x] `/logout` logs out user
 - [x] `/quote` to get a stock's latest price
 - [x] `/buy` to buy stocks
-- [ ] `/index` shows the portfolio of stocks
-- [ ] `/sell` to sell stocks
-- [ ] `/history` to see the history of transactions
+- [x] `/index` shows the portfolio of stocks
+- [x] `/sell` to sell stocks
+- [x] `/history` to see the history of transactions
 - [ ] `/api/check/<username>` to allow username validation client side via AJAX
 
-### Quick Development Setup
+## Quick Development Setup
 
 Fork. Clone. Make sure you `cd` to `stock-trading-app` directory. Set upstream and origin.
 

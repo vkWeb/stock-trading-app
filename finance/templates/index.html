@@ -6,7 +6,7 @@
 
 {% block main %}
 
-    <table class="table">
+    <table class="table table-responsive-sm">
         <thead>
             <tr>
                 <th>Company Name</th>
@@ -17,7 +17,7 @@
             </tr>
         </thead>
 
-        {% with money = namespace(total=0) %}
+        {% with money = namespace(total=0.00) %}
             <tbody>
                 {% for stock in portfolio %}
                     <tr>
@@ -35,16 +35,19 @@
                 {% endfor %}
 
                 <tr>
-                    <td>CASH IN HAND</td>
-                    <td colspan="4">{{ cash | usd }}</td>
-                </tr>
-
-                <tr>
-                    <td><b>Grand Total</b></td>
-                    {% set money.total = money.total + cash %}
-                    <td colspan="4"><b>{{ money.total | usd }}</b></td>
+                    <td>YOUR CASH</td>
+                    <td colspan="3"></td>
+                    <td>{{ cash | usd }}</td>
                 </tr>
             </tbody>
+            <tfoot>
+                <tr>
+                    <td><b>Grand Total</b></td>
+                    <td colspan="3"></td>
+                    {% set money.total = money.total + cash %}
+                    <td><b>{{ money.total | usd }}</b></td>
+                </tr>
+            </tfoot>
         {% endwith %}
     </table>
 

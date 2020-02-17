@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    History
+{% endblock %}
+
+{% block main %}
+
+    <table class="table table-responsive-sm">
+        <thead>
+            <tr>
+                <th>Company Name</th>
+                <th>Company Symbol</th>
+                <th>Shares</th>
+                <th>Price</th>
+                <th>Transaction Type</th>
+                <th>Time of transaction</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for trans in transactions %}
+                <tr>
+                    <td>{{ trans.company_name }}</td>
+                    <td>{{ trans.company_symbol }}</td>
+                    <td>{{ trans.shares }}</td>
+                    <td>{{ trans.price | usd }}</td>
+                    <td>{{ trans.trans_type | capitalize }}</td>
+                    <td>{{ trans.transacted_at }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
