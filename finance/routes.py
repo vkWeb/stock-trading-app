@@ -206,7 +206,7 @@ def buy():
                 return flask.redirect(flask.url_for("index"))
             # Else flash message to inform user for insufficient funds
             else:
-                flask.flash(f"You don't have enough cash. Total cost of purchase is {helpers.usd(cost)}, you have {helpers.usd(user_data.cash)} 😥", "info")
+                flask.flash(f"You don't have enough cash. Money required for purchase is {helpers.usd(cost)} and you have {helpers.usd(user_data.cash)} 😥", "info")
 
     # Render template
     return flask.render_template("buy.html")
@@ -217,23 +217,31 @@ def buy():
 def sell():
     """Sell shares of stock"""
 
+    # Fetch portfolio
     portfolio = helpers.get_portfolio()
 
+    # If method is POST as via form
     if flask.request.method == "POST":
         stock_found = False
 
+        # Check if the submitted symbol exists
         for stock in portfolio:
             if flask.request.form.get("symbol") == stock["symbol"]:
                 stock_found = True
                 
+                # Symbol exists. Check if user has valid number of shares
                 if int(flask.request.form.get("shares")) <= stock["shares"]:
+
+                    # Add sale to transaction and update cash
                     user = User.query.get(flask.session.get("user_id"))
                     price = helpers.lookup(stock["symbol"])["price"]
+
                     transaction = Transaction(user_id=user.id, company_name=stock["name"], company_symbol=stock["symbol"], shares=flask.request.form.get("shares"), price=price, trans_type="sale")
                     db.session.add(transaction)
                     db.session.commit()
+
                     user.cash = float(user.cash + (price * int(flask.request.form.get("shares"))))
-                    flask.flash("Successful", "success")
+                    flask.flash("Successfully sold 🙌", "success")
                     return flask.redirect(flask.url_for("index"))
                 else:
                     flask.flash("You don't have enough shares", "danger")

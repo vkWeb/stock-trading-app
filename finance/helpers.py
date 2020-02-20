@@ -75,14 +75,16 @@ def get_portfolio():
     portfolio = []
 
     # Loop from 0 till length of purchase transactions
+    j = 0
     for i in range (0, len(purchases)):
         sales_shares = 0
 
         # If sales exist for corresponding symbol
         # Initialize sales_shares to that found in db
-        if i < len(sales) and sales[i]:
-            if purchases[i].company_symbol == sales[i].company_symbol:
-                sales_shares = sales[i].shares
+        if j < len(sales) and sales[j]:
+            if purchases[i].company_symbol == sales[j].company_symbol:
+                sales_shares = sales[j].shares
+                j = j + 1
 
         # Append stock data to portfolio
         if int(purchases[i].shares - sales_shares) > 0:
