@@ -9,13 +9,13 @@ python-dotenv = "*"
 [packages]
 flask = "*"
 requests = "*"
-flask-session = "*"
 flask-sqlalchemy = "*"
 flask-migrate = "*"
 gunicorn = "*"
 psycopg2 = "*"
 cachelib = "*"
-werkzeug = "*"
+flask-session = "*"
+werkzeug = "==0.16.0"
 
 [requires]
 python_version = "3.7"
