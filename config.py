@@ -10,7 +10,7 @@ class Config(object):
     # SECRET_KEY = os.environ.get("SECRET_KEY")
 
     # Turn on Jinja template reloading
-    TEMPLATES_AUTO_RELOAD = True
+    # TEMPLATES_AUTO_RELOAD = True
 
     # Configure session to use filesystem (instead of signed cookies)
     SESSION_FILE_DIR = tempfile.mkdtemp()

@@ -68,8 +68,8 @@ def get_portfolio():
     user_id = session.get("user_id")
     
     # Query db for purchase and sale transactions
-    purchases = db.session.query(Transaction.company_name, Transaction.company_symbol, func.sum(Transaction.shares).label("shares")).filter_by(user_id=user_id, trans_type="purchase").group_by(Transaction.company_symbol).order_by(Transaction.company_symbol).all()
-    sales = db.session.query(Transaction.company_name, Transaction.company_symbol, func.sum(Transaction.shares).label("shares")).filter_by(user_id=user_id, trans_type="sale").group_by(Transaction.company_symbol).order_by(Transaction.company_symbol).all()
+    purchases = db.session.query(Transaction.company_name, Transaction.company_symbol, func.sum(Transaction.shares).label("shares")).filter_by(user_id=user_id, trans_type="purchase").group_by(Transaction.company_symbol, Transaction.company_name).order_by(Transaction.company_symbol).all()
+    sales = db.session.query(Transaction.company_name, Transaction.company_symbol, func.sum(Transaction.shares).label("shares")).filter_by(user_id=user_id, trans_type="sale").group_by(Transaction.company_symbol, Transaction.company_name).order_by(Transaction.company_symbol).all()
     
     # Initialize portfolio as a list
     portfolio = []
