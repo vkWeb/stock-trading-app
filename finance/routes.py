@@ -200,9 +200,9 @@ def buy():
             # If user has enough cash then subtract cost from cash
             # Add transaction info to db and flash success message
             if user_data.cash >= cost:
-                user_data.cash = user_data.cash - cost
                 transaction = Transaction(user_id=flask.session.get("user_id"), company_name=quote["name"], company_symbol=quote["symbol"], shares=flask.request.form.get("shares"), price=quote["price"], trans_type="purchase")
                 db.session.add(transaction)
+                user_data.cash = user_data.cash - cost
                 db.session.commit()
                 flask.flash("Purchase successful 🤑", "info")
                 return flask.redirect(flask.url_for("index"))
@@ -240,9 +240,9 @@ def sell():
 
                     transaction = Transaction(user_id=user.id, company_name=stock["name"], company_symbol=stock["symbol"], shares=flask.request.form.get("shares"), price=price, trans_type="sale")
                     db.session.add(transaction)
+                    user.cash = float(user.cash + (price * int(flask.request.form.get("shares"))))
                     db.session.commit()
 
-                    user.cash = float(user.cash + (price * int(flask.request.form.get("shares"))))
                     flask.flash("Successfully sold 🙌", "success")
                     return flask.redirect(flask.url_for("index"))
                 else:
