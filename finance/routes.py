@@ -259,7 +259,8 @@ def sell():
 def history():
     """Show history of transactions"""
 
-    transactions = Transaction.query.order_by(Transaction.transacted_at.desc())
+    user_id = flask.session.get("user_id")
+    transactions = Transaction.query.filter_by(user_id=user_id).order_by(Transaction.transacted_at.desc()).all()
     return flask.render_template("history.html", transactions=transactions)
 
 
