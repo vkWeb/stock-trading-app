@@ -9,10 +9,10 @@ A stock trading web app built on Flask with an aim to learn about backends.
 
 I'll be following Miguel Grinberg's Mega-Tutorial practices for structuring my app with my taste sprinkled in some places.
 
-Topics I plan to master by the end of this project:
+Topics I plan to master ~~by the end of this project~~ as I wander my dev journey:
 
-- [x] caching in detail
-- [x] databases, ORMs
+- [ ] web caching in detail
+- [ ] databases, ORMs
 - [ ] deployment to cloud
 - [ ] cookies, session management
 - [ ] authentication, authorization
